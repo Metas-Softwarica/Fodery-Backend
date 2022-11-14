@@ -26,7 +26,7 @@ class Profile(models.Model):
     phone = models.TextField(null=True,blank=True)
     birth_date = models.DateField(null=True)
     avatar = models.ImageField(upload_to='avatar/',null=True, blank=True)
-    address = models.JSONField(null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
     coverImage = models.ImageField(upload_to='coverImage/',null=True, blank=True)
     bio=models.TextField(null=True,blank=True)
     image_url = models.URLField(null=True,blank=True)
