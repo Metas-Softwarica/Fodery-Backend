@@ -1,14 +1,17 @@
 import json
-from rest_framework import status
+
 from django.test import TestCase, Client
 from django.urls import reverse
+
+from rest_framework import status
+
 from ..models import *
 
 
 client = Client()
 
-class LoginRegisterUserTest(TestCase):
 
+class LoginRegisterUserTest(TestCase):
     def setUp(self):
         self.user_register_payload = {
             'first_name': 'Sujan',
@@ -23,13 +26,12 @@ class LoginRegisterUserTest(TestCase):
         }
 
     def test_register_and_login_user(self):
-        response = client.post(reverse('registration'), 
-            data=json.dumps(self.user_register_payload),
-            content_type='application/json')
+        response = client.post(reverse('registration'),
+                               data=json.dumps(self.user_register_payload),
+                               content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        response = client.post(reverse('token_obtain_pair'), 
-            data=json.dumps(self.user_login_payload),
-            content_type='application/json')
+        response = client.post(reverse('token_obtain_pair'),
+                               data=json.dumps(self.user_login_payload),
+                               content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
