@@ -12,7 +12,26 @@ auth_urlpatterns = [
     ),
     path("register/", apis.RegistrationView.as_view(), name="registration"),
 ]
+admin_urlpatterns = [
+    path('login/', apis.AdminTokenObtainPairView.as_view(), name="admin_login"),
+    path("register/", apis.AdminRegistrationView.as_view(), name="registration"),
+]
+
+restaurant_manager_urlpatterns = [
+    path('login/', apis.RestaurantManagerTokenObtainPairView.as_view(),
+         name="rmanager_login"),
+    path("register/", apis.RestaurantManagerRegistrationView.as_view(),
+         name="registration"),
+]
+
+delivery_urlpatterns = [
+    path('login/', apis.DeliveryTokenObtainPairView.as_view(), name="delivery_login"),
+    path("register/", apis.DeliveryRegistrationView.as_view(), name="registration"),
+]
 
 urlpatterns = [
     path("auth/", include(auth_urlpatterns)),
+    path("admin/auth/", include(admin_urlpatterns)),
+    path("rmanager/auth/", include(restaurant_manager_urlpatterns)),
+    path("delivery/auth/", include(delivery_urlpatterns)),
 ]

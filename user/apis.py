@@ -1,4 +1,6 @@
-import os, requests, json
+import os
+import requests
+import json
 from django.db import transaction
 from django.shortcuts import HttpResponseRedirect
 from django.contrib.auth import login
@@ -6,16 +8,16 @@ from django.http.response import (
     HttpResponse,
     HttpResponseBadRequest
 )
+from django.contrib.auth.models import Group
 
 import google_apis_oauth
 from rest_framework import generics
-from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import User, Profile
-from .serializers import RegistrationSerializer
-from services import token
+from .serializers import RegistrationSerializer, AdminTokenObtainPairSerializer, DeliveryTokenObtainPairSerializer, RestaurantManagerTokenObtainPairSerializer
+from .services import token
 from fodery import settings
 
 
@@ -31,20 +33,76 @@ class RegistrationView(generics.CreateAPIView):
             user = serializer.save()
 
 
+class AdminRegistrationView(generics.CreateAPIView):
+    model = User
+    serializer_class = RegistrationSerializer
+    permission_classes = (AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        with transaction.atomic():
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            user = serializer.save()
+            group = Group.objects.get(name="Admin")
+            user.groups.add(group)
+
+
+class DeliveryRegistrationView(generics.CreateAPIView):
+    model = User
+    serializer_class = RegistrationSerializer
+    permission_classes = (AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        with transaction.atomic():
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            user = serializer.save()
+            group = Group.objects.get(name="Delivery")
+            user.groups.add(group)
+
+
+class RestaurantManagerRegistrationView(generics.CreateAPIView):
+    model = User
+    serializer_class = RegistrationSerializer
+    permission_classes = (AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        with transaction.atomic():
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            user = serializer.save()
+            group = Group.objects.get(name="RestaurantManager")
+            user.groups.add(group)
+
+
+class AdminTokenObtainPairView(TokenObtainPairView):
+    serializer_class = AdminTokenObtainPairSerializer
+
+
+class DeliveryTokenObtainPairView(TokenObtainPairView):
+    serializer_class = DeliveryTokenObtainPairSerializer
+
+
+class RestaurantManagerTokenObtainPairView(TokenObtainPairView):
+    serializer_class = RestaurantManagerTokenObtainPairSerializer
+
 
 # The url where the google oauth should redirect after a successful login.
 REDIRECT_URI = 'http://backend.sweedapp.com/user/google/callback/'
 # REDIRECT_URI = 'exp://192.168.1.73:19000'
 
 # Authorization scopes required
-SCOPES = ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email', "openid"]
+SCOPES = ['https://www.googleapis.com/auth/userinfo.profile',
+          'https://www.googleapis.com/auth/userinfo.email', "openid"]
 
 JSON_FILEPATH = os.path.join(os.getcwd(), 'client9.json')
+
 
 def RedirectGoogleSignin(request):
     oauth_url = google_apis_oauth.get_authorization_url(
         JSON_FILEPATH, SCOPES, REDIRECT_URI)
     return HttpResponseRedirect(oauth_url)
+
 
 def CallbackGoogleSignin(request):
     try:
@@ -57,15 +115,17 @@ def CallbackGoogleSignin(request):
         stringified_token = google_apis_oauth.stringify_credentials(
             credentials)
         stringified_token = json.loads(stringified_token)
-        response = requests.get(f"https://www.googleapis.com/oauth2/v3/userinfo?access_token={stringified_token['token']}")
+        response = requests.get(
+            f"https://www.googleapis.com/oauth2/v3/userinfo?access_token={stringified_token['token']}")
         jsonData = response.json()
         print(jsonData)
         if jsonData['email']:
             userData = {
-                "first_name":jsonData['given_name'],
-                "last_name":jsonData['family_name']
+                "first_name": jsonData['given_name'],
+                "last_name": jsonData['family_name']
             }
-            user, userExist = User.objects.get_or_create(email=jsonData["email"])
+            user, userExist = User.objects.get_or_create(
+                email=jsonData["email"])
             profile.__dict__.update(userData)
             user.save()
             profile, _ = Profile.objects.get_or_create(user=user)
