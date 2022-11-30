@@ -1,15 +1,15 @@
-from django.contrib.auth import get_user_model
-from django.utils.translation import gettext_lazy as _
-from django.contrib.auth import get_user_model
-
 from rest_framework import serializers
-
-from .models import Food
-
-User = get_user_model()
-
+from .models import FoodType, Food, Diet
 
 class FoodSerializer(serializers.ModelSerializer):
     class Meta:
         model = Food
         fields = '__all__'
+class FoodTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FoodType
+        fields = ['name', 'description', 'status']
+class DietSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Diet
+        fields = ['name', 'description', 'status']

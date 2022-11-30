@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'src.user',
-    'src.restaurant'
+    'src.restaurant',
+    'src.food',
 ]
 
 MIDDLEWARE = [
