@@ -33,3 +33,10 @@ class RestaurantApiViewset(viewsets.GenericViewSet, mixins.ListModelMixin):
     permission_classes = (AllowAny,)
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ('restaurant_name', 'address')
+
+
+class RestaurantMostRatedListApi(generics.ListAPIView):
+    pagination_class = None
+    queryset = Restaurant.objects.all().order_by('-rating')[:5]
+    permission_classes = (AllowAny,)
+    serializer_class = RestaurantSerializer
