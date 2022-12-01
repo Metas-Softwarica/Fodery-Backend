@@ -14,5 +14,7 @@ class Restaurant(models.Model):
     address = models.TextField(null=True, blank=True)
     email = models.TextField(null=True, blank=True)
     logo = models.ImageField(upload_to='restaurant_logo/', null=True, blank=True)
+    cover_image = models.ImageField(upload_to='restaurant_cover/', null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
     latitude = models.FloatField(null=True, blank=True)
+    rating = models.DecimalField(max_digits = 2, decimal_places = 2, default=0)
