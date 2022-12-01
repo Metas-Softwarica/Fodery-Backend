@@ -1,11 +1,13 @@
 from django.db import transaction
 
-from rest_framework import generics
+from rest_framework import generics, mixins, viewsets
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 from .models import Restaurant
 from .serializers import RestaurantSerializer
+
 
 class RestaurantCreateView(generics.CreateAPIView):
     model = Restaurant
@@ -23,8 +25,11 @@ class RestaurantCreateView(generics.CreateAPIView):
                 }
             )
 
-class RestaurantListView(generics.ListAPIView):
+
+class RestaurantApiViewset(viewsets.GenericViewSet, mixins.ListModelMixin):
     pagination_class = None
-    queryset = Restaurant.objects.filter()
-    permission_classes = (AllowAny,)
+    queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
+    permission_classes = (AllowAny,)
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ('restaurant_name', 'address')

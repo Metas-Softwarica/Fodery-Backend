@@ -14,3 +14,5 @@ class Restaurant(models.Model):
     address = models.TextField(null=True, blank=True)
     email = models.TextField(null=True, blank=True)
     logo = models.ImageField(upload_to='restaurant_logo/', null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+    latitude = models.FloatField(null=True, blank=True)

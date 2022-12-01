@@ -1,41 +1,27 @@
-from django.shortcuts import render
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from .models import Food
-from.serializers import FoodSerializer
-from django.http import JsonResponse
-from rest_framework import status
-# Create your views here.
-from .serializers import FoodSerializer, FoodTypeSerializer, DietSerializer
-from .models import Food, FoodType, Diet
 from rest_framework.permissions import AllowAny
-
-
 from rest_framework import generics, mixins, viewsets
-from rest_framework.authentication import TokenAuthentication 
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
 
-# get all foods and create api
+from .models import Diet, Food, FoodType
+from .serializers import DietSerializer, FoodSerializer, FoodTypeSerializer
 
-class foodApiViewset(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin):
+
+class FoodApiViewset(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin):
     queryset = Food.objects.all()
+    pagination_class = None
     serializer_class = FoodSerializer
     permission_classes = (AllowAny,)
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ('name', 'foodTypes__name', 'diets__name')
 
 
- # get food via id with CRUD api
-class foodApiDetail(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, mixins.RetrieveModelMixin):
-
+class FoodApiDetail(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, mixins.RetrieveModelMixin):
     serializer_class = FoodSerializer
+    pagination_class = None
     queryset = Food.objects.all()
     permission_classes = (AllowAny,)
-
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]
     lookup_field = 'id'
+
     def get(self, request, id):
         if id:
             return self.retrieve(request)
@@ -52,27 +38,22 @@ class foodApiDetail(generics.GenericAPIView, mixins.ListModelMixin, mixins.Creat
         return self.destroy(request, id)
 
 
-# FOOD TYPE
-# get all FoodTypes api
-
-class foodTypesApiViewset(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin):
+class FoodTypesApiViewset(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin):
     queryset = FoodType.objects.all()
+    pagination_class = None
     serializer_class = FoodTypeSerializer
     permission_classes = (AllowAny,)
     filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ('name', 'description','status')
+    search_fields = ('name', 'description', 'status')
 
 
-# get foodTypes via id API with CRUD
-class foodTypesApiDetail(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, mixins.RetrieveModelMixin):
-
+class FoodTypesApiDetail(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, mixins.RetrieveModelMixin):
     serializer_class = FoodTypeSerializer
+    pagination_class = None
     queryset = FoodType.objects.all()
     permission_classes = (AllowAny,)
-
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]
     lookup_field = 'id'
+
     def get(self, request, id):
         if id:
             return self.retrieve(request)
@@ -88,26 +69,23 @@ class foodTypesApiDetail(generics.GenericAPIView, mixins.ListModelMixin, mixins.
     def delete(self, request, id=None):
         return self.destroy(request, id)
 
-# // DIET 
-# get all and create API 
-class dietsApiViewset(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin):
+
+class DietsApiViewset(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin):
     queryset = Diet.objects.all()
+    pagination_class = None
     serializer_class = DietSerializer
     permission_classes = (AllowAny,)
     filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ('name', 'description','status')
+    search_fields = ('name', 'description', 'status')
 
 
-# get diet via id API with CRUD
-class dietsApiDetail(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, mixins.RetrieveModelMixin):
-
+class DietsApiDetail(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, mixins.RetrieveModelMixin):
     serializer_class = DietSerializer
+    pagination_class = None
     queryset = Diet.objects.all()
     permission_classes = (AllowAny,)
-
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]
     lookup_field = 'id'
+
     def get(self, request, id):
         if id:
             return self.retrieve(request)
@@ -122,6 +100,3 @@ class dietsApiDetail(generics.GenericAPIView, mixins.ListModelMixin, mixins.Crea
 
     def delete(self, request, id=None):
         return self.destroy(request, id)
-
-
-
