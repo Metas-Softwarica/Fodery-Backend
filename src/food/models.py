@@ -32,3 +32,4 @@ class Food(models.Model):
     updatedAt = models.DateField(null=True, blank=True)
     diets = models.ManyToManyField(Diet, blank=True)
     foodTypes = models.ManyToManyField(FoodType, blank=True)
+    price = models.FloatField(null=True, blank=True, default=0)
