@@ -17,4 +17,4 @@ class Restaurant(models.Model):
     cover_image = models.ImageField(upload_to='restaurant_cover/', null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
     latitude = models.FloatField(null=True, blank=True)
-    rating = models.DecimalField(max_digits = 2, decimal_places = 2, default=0)
+    rating = models.DecimalField(max_digits = 5, decimal_places = 2, default=0)
