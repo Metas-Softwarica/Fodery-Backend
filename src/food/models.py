@@ -1,7 +1,29 @@
 from decimal import Decimal
+from datetime import datetime
 
 from django.db import models
+from django.template.defaultfilters import slugify
 from django.core.validators import MinValueValidator
+
+
+class Extra(models.Model):
+    title = models.TextField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    price = models.IntegerField(null=True, blank=True)
+    slug = models.SlugField(null=True, blank=True, unique=True)
+    cover_image = models.ImageField(
+        upload_to='extras_cover_image/', null=True, blank=True)
+    createdAt = models.DateField(auto_now=True)
+    updatedAt = models.DateField(null=True, blank=True)
+
+    def __str__(self) -> str:
+        return self.title
+
+    def save(self, *args, **kwargs):
+        self.updated_at = datetime.now()
+        if not self.slug:
+            self.slug = slugify(self.title)
+        return super().save(*args, **kwargs)
 
 
 class Diet(models.Model):
@@ -29,13 +51,17 @@ class Food(models.Model):
     rating = models.IntegerField(default=0)
     thumbnail = models.ImageField(
         upload_to='food_thumbnail/', null=True, blank=True)
-    cover_image = models.ImageField(upload_to='food_cover_image/')
+    cover_image = models.ImageField(
+        upload_to='food_cover_image/', null=True, blank=True)
     status = models.BooleanField(default=False)
     createdAt = models.DateField(auto_now=True)
     updatedAt = models.DateField(null=True, blank=True)
     diets = models.ManyToManyField(Diet, blank=True)
     foodTypes = models.ManyToManyField(FoodType, blank=True)
-    price = models.FloatField(null=True, blank=True, default=0)
+    extra = models.ManyToManyField(Extra, blank=True)
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class FoodInvetory(models.Model):
@@ -113,6 +139,9 @@ class AttributeCollectionReferencePivot(models.Model):
         unique_together = (("attribute_reference",
                            "attribute_collection"),)
 
+    def __str__(self):
+        return f"{self.attribute_collection.name} : {self.attribute_reference.name}"
+
 
 class VariantPair(models.Model):
     reference = models.ForeignKey(
@@ -120,7 +149,7 @@ class VariantPair(models.Model):
     value = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.reference.name} : {self.value}"   
+        return f"{self.reference.name} : {self.value}"
 
 
 class VariantPairFoodInventoryPivot(models.Model):
@@ -140,3 +169,6 @@ class VariantPairFoodInventoryPivot(models.Model):
 
     class Meta:
         unique_together = (("attribute_pair", "food_inventory"),)
+
+    def __str__(self):
+        return f"{self.food_inventory.sku} : {self.attribute_pair.__str__()}"
