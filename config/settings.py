@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'src.user',
     'src.restaurant',
-    'src.food'
+    'src.food',
+    'src.review'
 ]
 
 MIDDLEWARE = [
