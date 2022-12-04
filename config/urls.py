@@ -22,5 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("user/", include("src.user.urls")),
     path("restaurant/", include("src.restaurant.urls")),
-    path('food/', include('src.food.urls'))
+    path('food/', include('src.food.urls')),
+    path('review/', include('src.review.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
