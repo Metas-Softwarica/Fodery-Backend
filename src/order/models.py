@@ -1,9 +1,19 @@
 from django.db import models
 from enum import Enum
 from datetime import datetime
+import bcrypt
+import random
+import string
 
 from src.food.models import FoodInvetory, Extra
 from src.user.models import User
+
+
+def random_key(length):
+    key = ''
+    for i in range(length):
+        key += random.choice(string.hexdigits)
+    return key
 
 
 class OrderItem(models.Model):
@@ -54,17 +64,18 @@ class Order(models.Model):
     delivered_at = models.DateTimeField(null=True, blank=True)
     updated_at = models.DateField(null=True, blank=True)
 
-    # def save(self, *args, **kwargs):
-    #     if self.identifier == None or self.identifier == "":
-    #         self.identifier=bcrypt.hashpw(str(str(self.id)).encode(), bcrypt.gensalt())
-    #         generated_key=random_key(8)
-    #         flag=False
+    def save(self, *args, **kwargs):
+        if self.identifier == None or self.identifier == "":
+            self.identifier = bcrypt.hashpw(
+                str(str(self.id)).encode(), bcrypt.gensalt())
+            generated_key = random_key(8)
+            flag = False
 
-    #         while not flag:
-    #             if Order.objects.filter(order_number=generated_key).exists():
-    #                 generated_key=random_key(8)
-    #             else:
-    #                 self.order_number=generated_key
-    #                 flag=True
-    #     self.updated_at=datetime.now()
-    #     return super().save(*args, **kwargs)
+            while not flag:
+                if Order.objects.filter(order_number=generated_key).exists():
+                    generated_key = random_key(8)
+                else:
+                    self.order_number = generated_key
+                    flag = True
+        self.updated_at = datetime.now()
+        return super().save(*args, **kwargs)
