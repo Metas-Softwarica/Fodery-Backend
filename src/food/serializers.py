@@ -23,7 +23,7 @@ class ExtraSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Extra
-        fields = ['title', 'slug', 'description', 'price', 'cover_image']
+        fields = ['id', 'title', 'slug', 'description', 'price', 'cover_image']
 
 
 class FoodSerializer(serializers.ModelSerializer):
@@ -31,7 +31,7 @@ class FoodSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Food
-        fields = ['name', 'slug', 'description',
+        fields = ['id', 'name', 'slug', 'description',
                   'rating', 'cover_image', 'price']
 
     def get_price(self, obj: Food):
