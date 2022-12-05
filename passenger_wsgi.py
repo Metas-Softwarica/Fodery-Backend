@@ -1,1 +1,1 @@
-from fodery.wsgi import application
+from config.wsgi import application
