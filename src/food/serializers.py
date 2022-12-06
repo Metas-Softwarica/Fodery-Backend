@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import FoodType, Food, Diet, FoodInvetory, VariantPair, Extra
+
+from .models import Diet, Extra, Food, FoodInvetory, FoodType, VariantPair
 
 
 class RelatedFieldMapperSerializer(serializers.PrimaryKeyRelatedField):
@@ -32,7 +33,7 @@ class FoodSerializer(serializers.ModelSerializer):
     class Meta:
         model = Food
         fields = ['id', 'name', 'slug', 'description',
-                  'rating', 'cover_image', 'price']
+                  'rating', 'cover_image', 'price', 'popularity']
 
     def get_price(self, obj: Food):
         queryset = FoodInvetory.objects.filter(

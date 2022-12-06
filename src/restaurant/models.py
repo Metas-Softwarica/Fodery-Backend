@@ -1,5 +1,5 @@
-from django.db import models
 from django.conf import settings
+from django.db import models
 
 
 # Create your models here.
@@ -13,8 +13,15 @@ class Restaurant(models.Model):
     phone = models.TextField(null=True, blank=True)
     address = models.TextField(null=True, blank=True)
     email = models.TextField(null=True, blank=True)
-    logo = models.ImageField(upload_to='restaurant_logo/', null=True, blank=True)
-    cover_image = models.ImageField(upload_to='restaurant_cover/', null=True, blank=True)
+    logo = models.ImageField(
+        upload_to='restaurant_logo/', null=True, blank=True)
+    cover_image = models.ImageField(
+        upload_to='restaurant_cover/', null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
     latitude = models.FloatField(null=True, blank=True)
-    rating = models.DecimalField(max_digits = 5, decimal_places = 2, default=0)
+    rating = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    popularity = models.IntegerField(default=0)
+
+    def add_view_popularity(self):
+        self.popularity += 1
+        self.save()

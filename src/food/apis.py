@@ -1,14 +1,14 @@
-from rest_framework.permissions import AllowAny
 from rest_framework import generics, mixins, viewsets
-from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.permissions import AllowAny
 
 from .models import Diet, Food, FoodType
-from .serializers import DietSerializer, FoodSerializer, FoodTypeSerializer, FoodDetailSerializer
+from .serializers import (DietSerializer, FoodDetailSerializer, FoodSerializer,
+                          FoodTypeSerializer)
 
 
 class FoodApiViewset(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin):
     queryset = Food.objects.all()
-    pagination_class = None
     serializer_class = FoodSerializer
     permission_classes = (AllowAny,)
     filter_backends = [SearchFilter, OrderingFilter]
@@ -34,6 +34,10 @@ class FoodApiDetail(
             return self.retrieve(request)
         else:
             return self.list(request)
+
+    def get_serializer(self, instance: Food, *args, **kwargs):
+        instance.add_view_popularity()
+        return super().get_serializer(instance, *args, **kwargs)
 
     # def post(self, request):
     #     return self.create(request)

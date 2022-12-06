@@ -1,6 +1,8 @@
-from django.urls import path, include
-from .apis import FoodApiViewset, FoodApiDetail, FoodTypesApiViewset, FoodTypesApiDetail, DietsApiViewset, DietsApiDetail
+from django.urls import include, path
 from rest_framework import routers
+
+from .apis import (DietsApiDetail, DietsApiViewset, FoodApiDetail,
+                   FoodApiViewset, FoodTypesApiDetail, FoodTypesApiViewset)
 
 router = routers.SimpleRouter()
 router.register('', FoodApiViewset, basename='food')
