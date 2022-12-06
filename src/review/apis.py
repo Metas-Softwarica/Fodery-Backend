@@ -1,6 +1,6 @@
-from rest_framework.permissions import AllowAny
 from rest_framework import generics, mixins, viewsets
-from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.permissions import AllowAny
 
 from .models import RestaurantReview
 from .serializers import RestaurantReviewSerializer
@@ -30,7 +30,6 @@ class LatestRestaurantReviewApiViewset(viewsets.GenericViewSet, mixins.ListModel
 #     permission_classes = (AllowAny,)
 #     filter_backends = [SearchFilter, OrderingFilter]
 #     search_fields = ('created_at', 'user__name', 'restaurant__name')
-
 
 
 class RestaurantReviewApiDetail(

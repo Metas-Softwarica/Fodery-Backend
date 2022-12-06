@@ -2,11 +2,12 @@ from django.test import TestCase
 
 from ..models import *
 
+
 class ProfileModelTest(TestCase):
 
     def setUp(self):
         user = User(
-            email = "test@gmail.com"
+            email="test@gmail.com"
         )
         user.save()
         Profile.objects.create(user=user)

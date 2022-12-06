@@ -1,24 +1,25 @@
-import os
-import requests
 import json
-from django.db import transaction
-from django.shortcuts import HttpResponseRedirect
-from django.contrib.auth import login
-from django.http.response import (
-    HttpResponse,
-    HttpResponseBadRequest
-)
-from django.contrib.auth.models import Group
+import os
 
 import google_apis_oauth
+import requests
+from django.contrib.auth import login
+from django.contrib.auth.models import Group
+from django.db import transaction
+from django.http.response import HttpResponse, HttpResponseBadRequest
+from django.shortcuts import HttpResponseRedirect
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import User, Profile
-from .serializers import RegistrationSerializer, AdminTokenObtainPairSerializer, DeliveryTokenObtainPairSerializer, RestaurantManagerTokenObtainPairSerializer
-from .services import token
 from config import settings
+
+from .models import Profile, User
+from .serializers import (AdminTokenObtainPairSerializer,
+                          DeliveryTokenObtainPairSerializer,
+                          RegistrationSerializer,
+                          RestaurantManagerTokenObtainPairSerializer)
+from .services import token
 
 
 class RegistrationView(generics.CreateAPIView):

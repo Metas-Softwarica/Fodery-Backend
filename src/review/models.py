@@ -1,7 +1,7 @@
 from django.db import models
 
-from src.user.models import User
 from src.restaurant.models import Restaurant
+from src.user.models import User
 
 
 class RestaurantReview(models.Model):
